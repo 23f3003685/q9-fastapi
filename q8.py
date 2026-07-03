@@ -25,21 +25,17 @@ def safe_float(x):
 
 
 def extract_vendor(text: str):
-    # strongest pattern first
-    m = re.search(r"Invoice from\s*[:\-]?\s*(.+?)(?:\||Amount|Total|Due|$)", text, re.I)
+    m = re.search(
+        r"Invoice from\s*[:\-]?\s*(.*?)(?=\||Amount|Total|Due|$)",
+        text,
+        re.IGNORECASE
+    )
     if m:
-        return m.group(1).strip()
+        vendor = m.group(1).strip()
+        if vendor.lower() != "invoice":
+            return vendor
 
-    # fallback: anything before amount/currency
-    m = re.search(r"(.+?)\s*(?=\d+(?:\.\d+)?\s*(USD|EUR|GBP))", text, re.I)
-    if m:
-        v = m.group(1).strip()
-        if "invoice" not in v.lower():
-            return v
-
-    # LAST fallback: still real text, NOT UNKNOWN
-    m = re.search(r"[A-Za-z0-9\-]+(?:\s+[A-Za-z0-9\-]+)*", text)
-    return m.group(0).strip() if m else None
+    return None
 def extract_amount(text):
     m = re.search(r"([0-9]+(?:\.[0-9]{1,2})?)\s*(USD|EUR|GBP)", text, re.I)
     if m:
