@@ -15,14 +15,21 @@ class InvoiceResponse(BaseModel):
     currency: str = Field(pattern="^[A-Z]{3}$")
     date: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
 
-
 def extract_vendor(text: str):
-    m = re.search(r"Invoice from\s*[:\-]?\s*(.+?)(?=\||Amount|Total|Due|$)", text, re.I)
+    m = re.search(
+        r"Invoice from\s*[:\-]?\s*(.+?)(?=\||Amount|Total|Due|$)",
+        text,
+        re.I
+    )
+
     if m:
         v = m.group(1).strip()
+
+        # extra safety: reject literal junk
         if v and v.lower() != "invoice":
             return v
-    return "UNKNOWN"
+
+    return None
 
 
 def extract_amount(text: str):
