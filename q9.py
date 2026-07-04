@@ -136,3 +136,7 @@ async def get_orders(
 @app.get("/")
 def home():
     return {"status": "running"}
+
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
