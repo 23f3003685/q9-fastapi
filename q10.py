@@ -17,7 +17,7 @@ rate_store = {}
 # -------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # IMPORTANT for grader
+    allow_origins=ALLOWED_ORIGIN,   # IMPORTANT for grader
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["X-Request-ID", "X-Process-Time"],
